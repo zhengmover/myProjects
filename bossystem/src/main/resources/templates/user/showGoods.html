@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="~{user/userBase :: head}"></div>
+<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}">
+<body>
+  <div class="container-scroller">
+    <!-- partial:../../partials/_navbar.html -->
+    <div th:replace="~{user/userBase :: topbar}"></div>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:../../partials/_sidebar.html -->
+      <div th:replace="~{user/userBase :: sidebar}"></div>
+      <!-- partial -->
+      <div class="main-panel" >
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title"></h4>
+<!--                  <p class="card-description">-->
+<!--                    Add class <code>.table-striped</code>-->
+<!--                  </p>-->
+                  <div class="table-responsive">
+                    <form class="forms-sample"  th:action="@{/user/buyGoods}" method="post" id="subForm">
+                    <table class="tablelist table table-striped" id="example">
+                      <thead>
+                        <tr>
+
+                          <th>
+                            水果种类
+                          </th>
+                          <th>
+                            图片
+                          </th>
+                          <th>
+                            名称
+                          </th>
+                          <th>
+                            单价(/箱)
+                          </th>
+                          <th>
+                            库存数量(/箱)
+                          </th>
+                          <th>
+                            购买箱数
+                          </th>
+                          <th>
+                            操作
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="good : ${goodsInfos}"  class="list_td">
+                          <td th:text="${good.id}" th:name="'id_'+${good.id}"></td>
+                          <td class="py-1">
+                            <img th:src="@{'../images/'+${good.gpath}}" alt="image"/>
+                          </td>
+                          <td th:text="${good.gname}" th:name="'gname_'+${good.id}">
+                          </td>
+                          <td th:text="${good.gprice}" >
+                          </td>
+                          <td th:text="${good.gstock}" th:name="'gstock_'+${good.id}">
+                          </td>
+                          <td>
+                            <input  type="text" class="form-control-sm" th:value="0" th:name="'text_'+${good.id}" th:onkeyup="this.value=this.value.replace(/\D/g,'').replace(/^0+(?=\d)/,'')">
+                          </td>
+                          <td>
+                            <button type="button" class=" btn btn-outline-success" onclick="buy(this)">下单</button>
+                            <button type="button" class=" btn btn-outline-info" onclick="setZero(this)">置零</button>
+                            <button type="button" class="btn btn-outline-warning" >已添加</button>
+                          </td>
+                        </tr>
+
+                      </tbody>
+
+                    </table >
+                      <tr>
+                        <td>
+                          合计 <span>￥:</span>
+                        </td>
+                        <td>
+                          <input th:value="0" type="text" class="text-primary font-weight-bold" th:id="gtotal" th:name="gtotal" readonly="true">
+
+                        </td>
+                        <td>
+                          <button type="button" class="btn btn-outline-success btn-lg"  onclick="purchase()">购买</button>
+                        </td>
+
+                      </tr>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+        <!-- partial -->
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+      <div th:include="~{user/userBase :: footer}"></div>
+
+    <script src="../js/myjs/bootstrap-notify.js"></script>
+
+    <script type="text/javascript">
+      //点击购买时触发的方法
+      function purchase(){
+        //利用Ajax方法提交表单
+
+        $('#subForm').ajaxSubmit({
+                  success: showResponse,
+                  resetForm:true
+                  });
+        $('.btn-outline-warning').hide();
+
+      }
+
+
+    //返回提示页面
+      function showResponse(data) {
+        if(data == 'success'){//如果成功
+          //弹出框设置
+          $.notify({
+            message: '购买成功!,请去我的订单中查看'
+          },{
+            type: 'success',
+            placement: {
+              from: "top",
+              align: "center"
+            },
+            delay: 1000 //显示时长(毫秒)
+          });
+        }else if (data == 'failure'){//如果失败
+          $.notify({
+            message: '请选择你想购买的商品'
+          },{
+            type: "warning",
+            placement: {
+              from: "top",
+              align: "center"
+            },
+            delay: 1000
+          });
+        }
+
+      }
+
+      function setZero(obj){
+        if($(obj).next().is(":visible")){
+          var gtotal = parseFloat($('#gtotal').val());//获取总价的数值
+          var wantBuyCount = $(obj).parent().prev().find('input').val();//获取用户想购买的箱数
+          var gprice = $(obj).parent().prev().prev().prev().text();//获取对应的单价数值
+
+          var total = parseFloat(gprice)*parseInt(wantBuyCount);//一种货物对应的总价
+          gtotal -= total;//减去置零的总价
+          gtotal.toFixed(2);
+          $('#gtotal').val(gtotal);//总价变动
+          $(obj).next().hide();//设置已添加按钮被隐藏
+        }
+
+        $(obj).parent().prev().find('input').val(0);//将购买数量置零
+
+      }
+
+
+      //完成点击购买的事件
+      function buy(obj) {
+
+        if($(obj).next().next().is(":hidden")){
+          var gtotal = parseFloat($('#gtotal').val());//获取总价的数值
+
+          var wantBuyCount = $(obj).parent().prev().find('input').val();//获取用户想购买的箱数
+          var kuncun = parseInt($(obj).parent().prev().prev().text());//获取对应商品的库存
+
+          if(parseInt(wantBuyCount) > kuncun){//如果想购买的商品超过库存,则提示
+            $.notify(
+                    {
+                      message: '库存不足'
+                    },{
+                      type: 'warning',
+                      placement: {
+                        from: "top",
+                        align: "center"
+                      },
+                      delay: 1000
+                    }
+            );
+
+            return;
+          }
+          var gprice = $(obj).parent().prev().prev().prev().text();//获取对应的单价数值
+
+          var total = parseFloat(gprice)*parseInt(wantBuyCount);//一种货物对应的总价
+
+          gtotal = gtotal + total;
+          gtotal.toFixed(2);
+
+          $('#gtotal').val(gtotal);//总价变动
+        }
+
+        if(wantBuyCount > 0){//如果购买箱数大于零
+          $(obj).next().next().show();//设置已添加按钮显示
+        }
+
+      }
+
+      // $(document).ready(
+      //   function () {
+      //     //设置已添加按钮被隐藏
+      //       $('.btn-outline-warning').hide();
+      //   }
+      // );
+
+      window.onload = function () {
+        //设置已添加按钮被隐藏
+        $('.btn-outline-warning').hide();
+
+        //实现分页
+        $("#example").dataTable({
+          "bProcessing" : true, //DataTables载入数据时，是否显示‘进度’提示
+          "aLengthMenu" : [5, 10, 15], //更改显示记录数选项
+          "sPaginationType" : "full_numbers", //详细分页组，可以支持直接跳转到某页
+          "bAutoWidth" : true, //是否自适应宽度
+          //"bJQueryUI" : true,
+          "oLanguage": { //国际化配置
+            "sProcessing" : "正在获取数据，请稍后...",
+            "sLengthMenu" : "显示 _MENU_ 条",
+            "sZeroRecords" : "没有您要搜索的内容",
+            "sInfo" : "从 _START_ 到  _END_ 条记录 总记录数为 _TOTAL_ 条",
+            "sInfoEmpty" : "记录数为0",
+            "sInfoFiltered" : "(全部记录数 _MAX_ 条)",
+            "sInfoPostFix" : "",
+            "sSearch" : "搜索",
+            "sUrl" : "",
+            "oPaginate": {
+              "sFirst" : "第一页",
+              "sPrevious" : "上一页",
+              "sNext" : "下一页",
+              "sLast" : "最后一页"
+            }
+          },
+        });
+      }
+
+
+    </script>
+  </div>
+</body>
+
+</html>

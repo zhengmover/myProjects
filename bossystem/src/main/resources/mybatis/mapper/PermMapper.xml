@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bossystem.mapper.PermMapper">
+
+    <select id="getAuthByUid" resultType="com.example.bossystem.pojo.Authority">
+        select * from permission where uid = #{uid}
+    </select>
+
+    <insert id="giveAuth">
+        insert into permission (uid,auth) values (#{uid},0)
+
+    </insert>
+
+</mapper>

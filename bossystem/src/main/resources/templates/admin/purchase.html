@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{admin/base :: head}"></div>
+<body>
+
+<div class="col-12 grid-margin">
+
+    <div class="card-body">
+            <h4 class="card-title">入库水果登记表</h4>
+            <form class="form-sample" method="post" th:action="@{/admin/checkIn}" id="mainForm">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">水果类别</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="gid">
+                                    <option th:each="info : ${goodsInfos}" th:text="${info.gname}" th:value="${info.id}"></option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">箱数</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" placeholder="请输入正整数" name="num"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">供货商</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="sid">
+                                    <option th:each="supplier : ${suppliers}" th:text="${supplier.name}" th:value="${supplier.id}"></option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">操作员</label>
+                            <div class="col-sm-9">
+                                <input  type="text" class="form-control" placeholder="请输入姓名" name="handler"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">性别</label>
+                            <div class="col-sm-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="sex" id="membershipRadios1" value="0" checked>
+                                        男
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="sex" id="membershipRadios2" value="1">
+                                        女
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-outline-success" onclick="handle()">登记</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+</div>
+
+
+<div th:include="~{admin/base :: footer}"></div>
+<script src="../js/myjs/bootstrap-notify.js"></script>
+<script type="text/javascript">
+    function handle() {
+        $('#mainForm').ajaxSubmit({
+            dataType:"text",
+            success: function (data) {
+                if(data == 'success'){//如果成功
+                    //弹出框设置
+                    $.notify({
+                        message: '处理成功!'
+                    },{
+                        type: 'success',
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        },
+                        delay: 1000 //显示时长(毫秒)
+                    })
+                }else{
+                    $.notify({
+                        message: '处理失败!'
+                    },{
+                        type: 'warning',
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        },
+                        delay: 1000 //显示时长(毫秒)
+                    })
+                }
+            },
+            error:function(){
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+
+            },
+            resetForm: false
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+spring:
+    datasource:
+
+        username: root
+        password: 1234
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/bos?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+                                                                                                        #allowMultiQueries=true为允许批处理
+        type: com.alibaba.druid.pool.DruidDataSource
+
+
+        initial-size: 5
+        minIdle: 5
+        max-active: 20
+        maxWait: 60000
+        time-between-eviction-runs-millis: 60000
+        min-evictable-idle-time-millis: 300000
+        validationQuery: SELECT 1 FROM DUAL
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        pool-prepared-statements: true
+
+
+
+        filter: stat,wall,log4j
+        maxPoolPreparedStatementPerConnectionSize: 20
+        useGlobalDataSourceStat: true
+        connectionProperties: druid.stat.mergeSql=true,druid.stat.slowSqlMillis=500
+
+    thymeleaf:
+        cache: false # \u5F00\u53D1\u65F6\u5173\u95ED\u7F13\u5B58,\u4E0D\u7136\u6CA1\u6CD5\u770B\u5230\u5B9E\u65F6\u9875\u9762
+#        mode: LEGACYHTML5 # \u7528\u975E\u4E25\u683C\u7684 HTML
+#        servlet:
+#            content-type: text/html
+mybatis:
+    config-location: classpath:mybatis/mybatis-config.xml
+    mapper-locations: classpath:mybatis/mapper/*.xml
+    type-aliases-package: com.example.bossystem.pojo

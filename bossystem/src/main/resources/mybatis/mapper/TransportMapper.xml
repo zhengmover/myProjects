@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bossystem.mapper.TransportMapper">
+<!--    //获取所有车辆信息-->
+    <select id="getAllCars" resultType="com.example.bossystem.pojo.Car">
+        select * from car
+    </select>
+
+<!--    //更新车辆信息-->
+    <update id="updateCar">
+        update car set car_type = #{car_type},car_num = #{car_num},
+	        traffic = #{traffic},car_status = #{car_status},used_traffic = #{used_traffic},dname=#{dname}
+	          where car_id = #{car_id}
+    </update>
+<!--    删除车辆信息-->
+    <delete id="delCar">
+        delete from car where car_id = #{carid}
+    </delete>
+
+<!--    新增车辆信息-->
+    <insert id="addCar" useGeneratedKeys="true" keyProperty="car_id">
+            insert into car (car_type,car_num,traffic,car_status,used_traffic,dname)
+                values (#{car_type},#{car_num},#{traffic},#{car_status},0,#{dname})
+    </insert>
+
+<!-- 查询可用的车辆信息   -->
+    <select id="getUsableCars" resultType="com.example.bossystem.pojo.Car">
+        select * from car where car_status = 2;
+    </select>
+
+<!-- 根据车辆id获取对应车辆信息   -->
+    <select id="getCarById" resultType="com.example.bossystem.pojo.Car">
+            select * from car where car_id = #{id}
+    </select>
+
+<!--    获取所有路线信息 -->
+    <select id="getAllRoutes" resultType="com.example.bossystem.pojo.RouteInfo">
+        select * from route
+    </select>
+
+<!--    //删除对应的路线-->
+    <delete id="delRoute">
+        delete from route where route_id = #{rid}
+    </delete>
+
+<!--    更新路线信息-->
+    <update id="updateRoute">
+        update route set route_name = #{route_name},start = #{start},end = #{end},
+            mileage = #{mileage},price = #{price} where route_id = #{route_id}
+    </update>
+
+<!--    新增路线信息-->
+    <insert id="addRoute" useGeneratedKeys="true" keyProperty="route_id">
+        insert into route (route_name,start,end,mileage,price)
+            values (#{route_name},#{start},#{end},#{mileage},#{price})
+    </insert>
+
+<!--    根据目的地查找路线信息-->
+    <select id="getRouteInfoByEnd" resultType="com.example.bossystem.pojo.RouteInfo">
+        select * from route where end = #{end}
+    </select>
+</mapper>

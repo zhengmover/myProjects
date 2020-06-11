@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bossystem.mapper.SystemMapper">
+
+<!--    获取所有部门信息-->
+    <select id="getAllDept" resultType="com.example.bossystem.pojo.Dept">
+       select * from bos_dept
+    </select>
+
+<!--    对部门信息进行修改-->
+    <update id="modifyDept">
+        update bos_dept set dept_name = #{dept_name},depict = #{depict} where dept_id = #{dept_id};
+
+    </update>
+
+<!--    删除对应部门-->
+    <delete id="delDept">
+        delete from bos_dept where dept_id = #{deptid}
+    </delete>
+
+<!--    //新增部门-->
+    <insert id="addDept" useGeneratedKeys="true" keyProperty="dept_id">
+        insert into bos_dept(dept_name,depict) values (#{dept_name},#{depict});
+
+    </insert>
+
+<!--    查询所有员工信息-->
+    <select id="getAllEmp" resultType="com.example.bossystem.pojo.Emp">
+        select bos_emp.*,bos_dept.dept_name from bos_emp,bos_dept
+            where dept_no = dept_id order by emp_num
+    </select>
+
+<!--    //根据员工id删除员工-->
+    <delete id="delEmp">
+        delete from bos_emp where emp_num = #{empid}
+    </delete>
+
+<!--    根据员工号进行更新-->
+    <update id="updateEmp">
+        update bos_emp set emp_name = #{emp_name},emp_hiredate = #{emp_hiredate},emp_tel = #{emp_tel},
+            dept_no = #{dept_no},emp_status = #{emp_status} where emp_num = #{emp_num}
+    </update>
+
+<!--    新增员工-->
+    <insert id="addEmp" keyProperty="emp_num" useGeneratedKeys="true">
+        insert into bos_emp(emp_name,emp_hiredate,emp_tel,dept_no,emp_status)
+            values (#{emp_name},#{emp_hiredate},#{emp_tel},#{dept_no},#{emp_status});
+
+    </insert>
+
+
+
+<!--    根据员工id获取员工信息-->
+    <select id="getEmpById" resultType="com.example.bossystem.pojo.Emp">
+        select * from bos_emp where emp_num = #{uid}
+    </select>
+</mapper>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>物流管理系统</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="../vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../vendors/base/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <link rel="stylesheet" href="../vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="../css/style.css">
+<!--    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}">-->
+    <!-- endinject -->
+    <!--  <link rel="shortcut icon" href="images/favicon.png" />-->
+
+
+</head>
+<body>
+<div class="container-scroller">
+<nav th:fragment="topbar" class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+    <div class="navbar-brand-wrapper d-flex justify-content-center">
+        <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
+            <h4>欢迎使用本系统</h4>
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                <span class="mdi mdi-sort-variant"></span>
+            </button>
+        </div>
+    </div>
+    <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <ul class="navbar-nav mr-lg-4 w-100">
+            <li class="nav-item nav-search d-none d-lg-block w-100">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                <span class="input-group-text" id="search">
+                  <i class="mdi mdi-magnify"></i>
+                </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search now" aria-label="search" aria-describedby="search">
+                </div>
+            </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+            <li class="nav-item nav-profile dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+<!--                    <img src="../images/faces/face5.jpg" alt="profile"/>-->
+                    <i class="mdi mdi-account-circle" ></i>
+                    <span class="nav-profile-name">用户操作</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+<!--                    <a class="dropdown-item">-->
+<!--                        <i class="mdi mdi-settings text-primary"></i>-->
+<!--                        Settings-->
+<!--                    </a>-->
+                    <a class="dropdown-item" th:href="@{/logout}">
+                        <i class="mdi mdi-logout text-primary"></i>
+                        注销登录
+                    </a>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+<!-- partial -->
+    <div  class="container-fluid page-body-wrapper">
+    <!-- partial:partials/_sidebar.html -->
+    <nav th:fragment="sidebar" class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/toUserMain}">
+                    <i class="mdi mdi-home menu-icon"></i>
+                    <span class="menu-title">个人主页</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user/allGoodsInfo}">
+                    <i class="mdi mdi-view-headline menu-icon"></i>
+                    <span class="menu-title">下单页面</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user/showUserOrder}">
+                    <i class="mdi mdi-bank menu-icon"></i>
+                    <span class="menu-title">我的订单</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="main-panel"></div>
+    </div>
+</div>
+
+    <div th:fragment="footer">
+        <script src="../vendors/base/vendor.bundle.base.js"></script>
+        <!-- endinject -->
+        <!-- Plugin js for this page-->
+        <script src="../vendors/chart.js/Chart.min.js"></script>
+        <script src="../vendors/datatables.net/jquery.dataTables.js"></script>
+        <script src="../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+        <!-- End plugin js for this page-->
+        <!-- inject:js -->
+        <script src="../js/off-canvas.js"></script>
+        <script src="../js/hoverable-collapse.js"></script>
+        <script src="../js/template.js"></script>
+        <!-- endinject -->
+        <!-- Custom js for this page-->
+        <script src="../js/dashboard.js"></script>
+        <script src="../js/data-table.js"></script>
+        <script src="../js/jquery.dataTables.js"></script>
+        <script src="../js/dataTables.bootstrap4.js"></script>
+        <script src="../js/jquery.form.js"></script>
+<!--          <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>-->
+<!--          <script th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>-->
+<!--        <script src="../js/myjs/bootstrap-notify.js"></script>-->
+<!--        <script src="../js/myjs/ajaxUser.js"></script>-->
+
+    </div>
+</body>
+</html>

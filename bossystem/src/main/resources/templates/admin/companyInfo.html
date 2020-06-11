@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{admin/base :: head}"></div>
+<body>
+
+<div class="col-12 grid-margin stretch-card">
+
+    <div class="card-body">
+            <h4 class="card-title" >公司简介</h4>
+            <form class="forms-sample">
+                <div class="form-group">
+                    <label for="name">公司名称</label>
+                    <input type="text" class="form-control" id="name" th:value="${name}">
+                </div>
+                <div class="form-group">
+                    <label for="time">成立时间</label>
+                    <input type="text" class="form-control" id="time" th:value="${time}">
+                </div>
+                <div class="form-group">
+                    <label for="business">主营业务</label>
+                    <input type="text" class="form-control" id="business" th:value="${business}"
+                </div>
+                <div class="form-group">
+                    <label for="address">公司地址</label>
+                    <input type="text" class="form-control" id="address" th:value="${address}">
+                </div>
+
+                <div class="form-group">
+                    <label for="depict">公司描述</label>
+                    <textarea class="form-control" id="depict" rows="5" th:text="${depict}"></textarea>
+                </div>
+
+
+            </form>
+        </div>
+
+</div>
+
+
+<div th:include="~{admin/base :: footer}"></div>
+
+<script type="text/javascript">
+    window.onload = function () {
+        $('#name').attr("readonly","readonly");
+        $('#time').attr("readonly","readonly");
+        $('#business').attr("readonly","readonly");
+        $('#address').attr("readonly","readonly");
+        $('#depict').attr("readonly","readonly");
+    }
+</script>
+</body>
+</html>

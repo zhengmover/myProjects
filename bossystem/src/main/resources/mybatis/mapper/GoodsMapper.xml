@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bossystem.mapper.GoodsMapper">
+
+<!--    查出所有类别的水果-->
+    <select id="getAllGoodsInfo" resultType="com.example.bossystem.pojo.GoodsInfo">
+        select * from goods_type
+    </select>
+
+
+<!--    //根据商品id,在用户购买后执行对库存的更新-->
+    <update id="updateGoods" parameterType="java.util.Map">
+        <foreach collection="ids" item="value" separator=";" index="key" open="" close="">
+            update goods_type  set  gstock = gstock - #{value }  where id = #{key}
+        </foreach>
+    </update>
+
+<!--    //根据水果id查询对应的水果-->
+    <select id="getGoodByIds" resultType="com.example.bossystem.pojo.GoodsInfo" parameterType="java.util.List">
+        select * from goods_type where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+
+<!--    //将用户此次订单购买的商品存入数据库中-->
+    <insert id="insertToUserBuy" keyProperty="id" useGeneratedKeys="true">
+
+        insert into user_buyinfo (user_id,gname,gcount,order_no,gpath) values
+        <foreach collection="goods" item="good" separator=",">
+            (
+                #{good.user_id},
+                #{good.gname},
+                #{good.gcount},
+                #{good.order_no},
+                #{good.gpath}
+
+            )
+        </foreach>
+
+    </insert>
+
+<!--    //将用户此次订单存入订单表-->
+    <insert id="insertToUserOrder">
+        <selectKey order="BEFORE" keyProperty="order_no" resultType="Integer">
+            select ifnull(max(order_no),0)+1 from user_orderinfo
+        </selectKey>
+        insert into user_orderinfo values (#{order_no},#{user_id},#{gtotal},#{order_time},#{status})
+    </insert>
+
+<!--    //查询出订单页面order_no的最大值-->
+    <select id="getMaxOrderId" resultType="Integer">
+        select max(order_no) from user_orderinfo
+    </select>
+
+<!--    获取根据用户id用户所有的订单信息-->
+    <select id="getAllUserOrderInfoByUid" resultType="com.example.bossystem.pojo.UserOrderInfo">
+        select a.*, b.uaddress from
+	        user_orderinfo as a,user as b where a.user_id = #{uid}
+                and a.user_id = b.uid
+                    order by order_no desc
+    </select>
+
+
+<!--     //根据用户id和订单号查询用户此次购买的商品信息-->
+    <select id="getAllUserBuyByUidAndOrderno" resultType="com.example.bossystem.pojo.UserBuyInfo">
+            select * from user_buyinfo where user_id = #{uid} and order_no = #{order_no}
+    </select>
+
+<!--    获取一次订单订购对应的箱数-->
+    <select id="getGoodsCountByOrderNo" resultType="int">
+        select sum(b.gcount) from user_orderinfo as a,user_buyinfo as b
+	            where a.order_no = b.order_no and a.order_no = #{order_no};
+    </select>
+
+<!--    //根据订单号查询订单-->
+    <select id="getUserOrderInfoById" resultType="com.example.bossystem.pojo.UserOrderInfo">
+        select * from user_orderinfo where order_no = #{order_no}
+    </select>
+
+<!--    //用户设置订单已到达-->
+    <update id="setUserInfoRecv">
+        update user_orderinfo set status = 2 where order_no = #{order_no}
+    </update>
+
+<!--    新增入库货物登记信息-->
+    <insert id="addPurchaseInfo" keyProperty="id" useGeneratedKeys="true">
+        insert into purchase(gid,num,sid,handler,sex)
+            values (#{gid},#{num},#{sid},#{handler},#{sex})
+    </insert>
+
+<!--    新增原有货物库存数量-->
+    <update id="addGoods">
+        update goods_type set gstock = gstock+#{num} where id = #{id};
+    </update>
+
+    <select id="getAllPurchaseInfo" resultType="com.example.bossystem.pojo.PurchaseInfo">
+        select a.* ,b.gname,c.name from purchase as a,goods_type as b ,
+	supplier as c where a.gid = b.id and a.sid = c.id;
+    </select>
+</mapper>

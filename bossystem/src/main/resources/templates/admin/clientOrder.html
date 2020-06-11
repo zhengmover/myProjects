@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>物流管理系统</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="../../vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../vendors/base/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <link rel="stylesheet" href="../../vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/mycss/jquery.dataTables.min.css">
+    <!-- endinject -->
+    <!--  <link rel="shortcut icon" href="images/favicon.png" />-->
+</head>
+
+<body>
+
+<div class="col-lg-12 grid-margin stretch-card">
+
+        <div class="card-body">
+            <h4 class="card-title" style="color: red">用户:[[${user.uname}]]的订单</h4>
+
+            <div class="table-responsive pt-3">
+                <table class="table table-bordered tablelist" id="example">
+                    <thead>
+                    <tr>
+                        <th>
+                           订单号
+                        </th>
+                        <th>
+                            下单日期
+                        </th>
+                        <th>
+                            订单状态
+                        </th>
+                        <th>
+                            收货地址
+                        </th>
+                        <th>
+                            操作
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="info : ${infos}">
+                        <td th:text="${info.order_no}"></td>
+                        <td th:text="${#dates.format(info.order_time,'yyyy-MM-dd') }"></td>
+                        <td th:switch="${info.status}" class="switch">
+                            <input type="hidden" th:value="${info.status}">
+                            <div th:case="0" class="badge badge-danger">
+                                订单状态:待出库
+                            </div>
+                            <div th:case="1" class="badge badge-info">
+                                订单状态:已出库
+                            </div>
+                            <div th:case="2" class="badge badge-success">
+                                订单状态:已接收
+                            </div>
+
+                        </td>
+                        <td th:text="${info.uaddress}"></td>
+                        <td>
+                            <a th:href="@{/admin/orderDetail(uid=${user.uid},order_no=${info.order_no})}">
+                                <button class="btn btn-outline-info">查看订单详情</button>
+                            </a>
+
+                            <a th:href="@{/admin/handleOrder(order_no=${info.order_no})}">
+                                <button class="btn btn-outline-success" >前往处理订单</button>
+                            </a>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+</div>
+
+<script src="../../vendors/base/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="../../vendors/chart.js/Chart.min.js"></script>
+<script src="../../vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="../../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="../../js/off-canvas.js"></script>
+<script src="../../js/hoverable-collapse.js"></script>
+<script src="../../js/template.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="../../js/dashboard.js"></script>
+<script src="../../js/data-table.js"></script>
+<script src="../../js/jquery.dataTables.js"></script>
+<script src="../../js/dataTables.bootstrap4.js"></script>
+<script src="../../js/jquery.form.js"></script>
+<script type="text/javascript">
+    //实现分页
+    $(document).ready(function(){
+
+        $("#example").dataTable({
+            "bProcessing" : true, //DataTables载入数据时，是否显示‘进度’提示
+            "aLengthMenu" : [5, 10, 15], //更改显示记录数选项
+            "sPaginationType" : "full_numbers", //详细分页组，可以支持直接跳转到某页
+            "bAutoWidth" : true, //是否自适应宽度
+            //"bJQueryUI" : true,
+            "oLanguage": { //国际化配置
+                "sProcessing" : "正在获取数据，请稍后...",
+                "sLengthMenu" : "显示 _MENU_ 条",
+                "sZeroRecords" : "没有您要搜索的内容",
+                "sInfo" : "从 _START_ 到  _END_ 条记录 总记录数为 _TOTAL_ 条",
+                "sInfoEmpty" : "记录数为0",
+                "sInfoFiltered" : "(全部记录数 _MAX_ 条)",
+                "sInfoPostFix" : "",
+                "sSearch" : "搜索",
+                "sUrl" : "",
+                "oPaginate": {
+                    "sFirst" : "第一页",
+                    "sPrevious" : "上一页",
+                    "sNext" : "下一页",
+                    "sLast" : "最后一页"
+                }
+            },
+        });
+    });
+</script>
+</body>
+</html>

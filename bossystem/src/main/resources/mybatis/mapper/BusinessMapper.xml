@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bossystem.mapper.BusinessMapper">
+
+<!--    //查询客户信息-->
+    <select id="getAllClients" resultType="com.example.bossystem.pojo.User">
+        select * from user where uid not in (1);
+    </select>
+
+<!--    根据客户id查询对应客户的订单-->
+    <select id="getClientOrderByUid" resultType="com.example.bossystem.pojo.UserOrderInfo">
+
+        select a.*, b.uaddress from
+	        user_orderinfo as a,user as b where a.user_id = #{uid}
+                and a.user_id = b.uid order by a.order_no desc
+    </select>
+
+<!--    新增订单处理单信息-->
+    <insert id="addHandleInfo" keyProperty="id" useGeneratedKeys="true">
+        insert into handleinfo (order_id,username,car_id,pay,
+		destination,postcode,operator)
+	        values (#{order_id},#{username},#{car_id},#{pay},
+	        #{destination},#{postcode},#{operator});
+    </insert>
+
+<!--    //设置订单状态-->
+    <update id="updateOrderInfo">
+        update user_orderinfo set status = #{status} where order_no = #{order_no}
+    </update>
+
+<!--    //获取所有的调拨单信息-->
+    <select id="getAllHandleInfos" resultType="com.example.bossystem.pojo.HandleInfo">
+       select a.*,b.dname,b.car_num,c.status from handleinfo as a,car as b,user_orderinfo as c
+	where a.car_id = b.car_id and a.order_id = c.order_no order by a.order_id;
+    </select>
+</mapper>

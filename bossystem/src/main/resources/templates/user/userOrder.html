@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{user/userBase :: head}"></div>
+<body>
+    <div class="container-scroller">
+        <div th:replace="~{user/userBase :: topbar}"></div>
+        <div  class="container-fluid page-body-wrapper">
+            <div th:replace="~{user/userBase :: sidebar}"></div>
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-lg-12 stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">订单记录</h4>
+                                    <div class="table-responsive pt-3" th:each="userOrderInfo : ${userOrderInfoList}">
+
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr class="table-warning">
+                                                    <th>订单编号:[[${userOrderInfo.order_no}]]</th>
+                                                    <th>总价:[[${userOrderInfo.gtotal}]]</th>
+                                                    <th>下单时间:[[${#dates.format(userOrderInfo.order_time,'yyyy-MM-dd') }]]</th>
+                                                    <th>收货地址:[[${userOrderInfo.uaddress}]]</th>
+<!--                                                    <th>订单状态:[[${userOrderInfo.status}]]</th>-->
+                                                    <th th:switch="${userOrderInfo.status}">
+                                                        <input type="hidden" th:value="${userOrderInfo.status}">
+                                                        <div th:case="0" class="badge badge-danger">
+                                                            订单状态:待出库
+                                                        </div>
+                                                        <div th:case="1" class="badge badge-info">
+                                                            订单状态:已出库
+                                                        </div>
+                                                        <div th:case="2" class="badge badge-success">
+                                                            订单状态:已接收
+                                                        </div>
+
+                                                    </th>
+                                                    <th>
+                                                        <button th:id="'btn_'+${userOrderInfo.order_no}" th:onclick="'javascript:confirm_receipt(\''+${userOrderInfo.order_no}+'\');'" class="btn btn-outline-success">确认收货</button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>图片</th>
+                                                <th>商品名称</th>
+                                                <th>
+                                                    数量/箱
+                                                </th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            <tr class="table-success" th:each="info : ${allUserBuyInfo.get(userOrderInfo.order_no)}">
+
+                                                <td>
+                                                    <img th:src="@{'../images/'+${info.gpath}}" alt="image"/>
+                                                </td>
+                                                <td th:text="${info.gname}"></td>
+                                                <td th:text="${info.gcount}"></td>
+                                            </tr>
+
+                                            </tbody>
+
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div th:include="~{user/userBase :: footer}"></div>
+    <script src="../js/myjs/bootstrap-notify.js"></script>
+    <script type="text/javascript">
+        function confirm_receipt(order_no) {
+
+            if($('#btn_'+order_no).parent().prev().find('input').val() == 1){
+                $.ajax({
+                    url:"/user/setUserInfoRecv/"+order_no,
+                    type: "GET",
+                    success: function (data) {
+                        if(data == 'success'){
+
+                            $.notify({
+                                message: '操作成功!'
+                            },{
+                                type: 'success',
+                                placement: {
+                                    from: "top",
+                                    align: "center"
+                                },
+                                delay: 1000 //显示时长(毫秒)
+                            });
+                        }
+
+                    },
+                });
+            }else{
+                $.notify({
+                    message: '不可确认收货!'
+                },{
+                    type: 'warning',
+                    placement: {
+                        from: "top",
+                        align: "center"
+                    },
+                    delay: 1000 //显示时长(毫秒)
+                });
+            }
+            //更新后重新加载页面,设置延迟1s刷新
+            setTimeout(function () {
+                location.reload();//刷新页面
+            },1000);
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>物流管理系统</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="../../vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../vendors/base/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <link rel="stylesheet" href="../../vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <!-- endinject -->
+    <!--  <link rel="shortcut icon" href="images/favicon.png" />-->
+</head>
+<body>
+    <div class="col-12 grid-margin">
+
+        <div class="card-body">
+            <h4 class="card-title">订单处理单</h4>
+            <form class="form-sample" method="post" th:action="@{/admin/handle}" id="mainForm" >
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">订单号</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="orderid" class="form-control" th:value="${info.order_no}" name="order_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">客户名</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="username" class="form-control" th:value="${user.uname}" name="username"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">运输车辆</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="car_id">
+                                    <option th:each="car : ${cars}" th:text="${car.car_num}" th:value="${car.car_id}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">运费</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" placeholder="请输入金额" name="pay"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+<!--                    <div class="col-md-6">-->
+<!--                        <div class="form-group row">-->
+<!--                            <label class="col-sm-3 col-form-label">司机(运输部员工)</label>-->
+<!--                            <div class="col-sm-9">-->
+<!--                                <select class="form-control" name="driver_id">-->
+<!--                                    <option th:each="emp : ${emps}" th:text="${emp.emp_name}" th:value="${emp.emp_num}"></option>-->
+
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">客户联系方式</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" id="tel"  type="text" th:value="${user.utel}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">目的地址</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="aimAddress" th:value="${user.uaddress}" name="destination"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">目的地邮编</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postCode" th:value="${user.upostcode}" name="postcode"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">调拨单操作人</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="operator"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-outline-success" onclick="handleOrder()">确认处理</button>
+            </form>
+        </div>
+
+</div>
+
+
+
+
+
+    <script type="text/javascript">
+
+
+        //设置不可编辑
+        window.onload = function () {
+            $('#orderid').attr("readonly","readonly");
+            $('#username').attr("readonly","readonly");
+            $('#tel').attr("readonly","readonly");
+            $('#aimAddress').attr("readonly","readonly");
+            $('#postCode').attr("readonly","readonly");
+        }
+
+
+        function handleOrder() {
+            $('#mainForm').ajaxSubmit({
+                dataType:"text",
+                success: function (data) {
+                    if(data == 'success'){//如果成功
+                        //弹出框设置
+                        $.notify({
+                            message: '处理成功!'
+                        },{
+                            type: 'success',
+                            placement: {
+                                from: "top",
+                                align: "center"
+                            },
+                            delay: 1000 //显示时长(毫秒)
+                        })
+                    }else{
+                        $.notify({
+                            message: '处理失败!'
+                        },{
+                            type: 'warning',
+                            placement: {
+                                from: "top",
+                                align: "center"
+                            },
+                            delay: 1000 //显示时长(毫秒)
+                        })
+                    }
+                },
+                error:function(){
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+
+                },
+                resetForm: false
+            });
+            //更新后重新加载页面,设置延迟1s刷新
+            // setTimeout(function () {
+            //     location.reload();//刷新页面
+            // },1000);
+        }
+    </script>
+
+    <script src="../../vendors/base/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <script src="../../vendors/chart.js/Chart.min.js"></script>
+    <script src="../../vendors/datatables.net/jquery.dataTables.js"></script>
+    <script src="../../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="../../js/off-canvas.js"></script>
+    <script src="../../js/hoverable-collapse.js"></script>
+    <script src="../../js/template.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="../../js/dashboard.js"></script>
+    <script src="../../js/data-table.js"></script>
+    <script src="../../js/jquery.dataTables.js"></script>
+    <script src="../../js/dataTables.bootstrap4.js"></script>
+    <script src="../../js/jquery.form.js"></script>
+    <script src="../../js/myjs/bootstrap-notify.js"></script>
+</body>
+</html>

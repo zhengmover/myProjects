@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{admin/base :: head}"></div>
+<body>
+
+    <div class="col-lg-12 grid-margin stretch-card">
+<!--                            <div class="card">-->
+        <div class="card-body" id="showMsg">
+             <h4 class="card-title">部门管理</h4>
+             <a>
+                 <button class="btn btn-outline-success" onclick="btn_show2()">新增部门</button>
+             </a>
+                 <div class="table-responsive">
+                     <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>
+                                    部门编号
+                                </th>
+                                <th>
+                                    部门名称
+                                </th>
+                                <th>
+                                    部门简介
+                                </th>
+                                <th>
+                                    操作
+                                </th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="dept : ${depts}" >
+
+                                <td th:text="${dept.dept_id}"></td>
+                                <td th:text="${dept.dept_name}" th:id="'text_'+${dept.dept_id}"></td>
+                                <td th:text="${dept.depict}" th:id="'str_'+${dept.dept_id}">
+
+                                </td>
+                                <td>
+                                    <a>
+                                        <button class="btn btn-outline-info"  th:onclick="'javascript:btn_show1(\''+${dept.dept_id}+'\');'" >修改</button>
+                                    </a>
+                                    <!--th:href="@{/admin/deptDel/}+${dept.dept_id}"-->
+                                    <a>
+                                        <button class="btn btn-outline-danger" th:onclick="'javascript:btn_del(\''+${dept.dept_id}+'\');'">删除</button>
+
+                                    </a>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                     </table>
+                </div>
+        </div>
+    </div>
+
+
+
+    <!--    设置修改部门弹出框div-->
+    <div class="modal fade" id="deptModify" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <form  th:action="@{/admin/deptModify}" method="post" class="forms-sample" id="modForm">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title" id="myModalLabel">修改部门</h4>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" id="did" name="dept_id">
+                    <div class="form-group">
+                        <label for="deptname">部门名称:</label>
+                        <input type="text" name="dept_name" class="form-control" id="deptname" >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="depict">部门简介:</label>
+                        <input type="text" name="depict" class="form-control" id="depict" >
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+
+                    <button type="button" onclick="modify()" id="btn_submit" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>确认</button>
+
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+
+<!--设置新增部门弹出框div-->
+    <div class="modal fade" id="deptadd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <form class="forms-sample" th:action="@{/admin/deptAdd}" method="post" id="addForm">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title">新增</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="deptname">部门名称:</label>
+                        <input type="text" name="dept_name" class="form-control" id="dept_name" >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="depict">部门简介:</label>
+                        <input type="text" name="depict" class="form-control" id="descript" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                    <button type="button" onclick="add()" id="btn_submit1" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:include="~{admin/base :: footer}"></div>
+    <script src="../js/myjs/bootstrap-notify.js"></script>
+    <script type="text/javascript">
+
+    //负责显示修改弹窗功能
+    function btn_show1(id) {
+        $('#deptModify').modal();//显示修改弹窗
+        var id = id;
+        var deptname = $('#text_'+id).text();//获取对应的部门名
+        var decipt = $('#str_'+id).text();//获取对应的部门简介
+        $('#deptname').val(deptname);//赋值
+        $('#depict').val(decipt);
+        $('#did').val(id);
+    }
+
+    //修改部门信息
+    function modify(){
+        $('#modForm').ajaxSubmit({
+            success: showResponse,
+            resetForm: false
+        });
+        //更新后重新加载页面,设置延迟1s刷新
+        setTimeout(function () {
+            location.reload();//刷新页面
+        },1000);
+    }
+
+    //返回提示页面
+    function showResponse(data) {
+        if(data == 'success'){//如果成功
+            //弹出框设置
+            $.notify({
+                message: '修改成功!'
+            },{
+                type: 'success',
+                placement: {
+                    from: "top",
+                    align: "center"
+                },
+                delay: 1000 //显示时长(毫秒)
+            });
+        }else if (data == 'failure'){//如果失败
+            $.notify({
+                message: '修改失败！'
+            },{
+                type: "warning",
+                placement: {
+                    from: "top",
+                    align: "center"
+                },
+                delay: 1000
+            });
+        }
+
+    }
+
+    //实现删除操作和对应的动画
+    function btn_del(deptid) {
+
+    $.ajax({
+        success: function (data) {
+            if(data == 'success'){
+                $('#text_'+deptid).parent().remove();
+                $.notify({
+                    message: '删除成功!'
+                },{
+                    type: 'success',
+                    placement: {
+                        from: "top",
+                        align: "center"
+                    },
+                    delay: 1000 //显示时长(毫秒)
+                });
+            }
+
+        },
+        url: "/admin/deptDel/"+deptid,
+        type: "GET",
+        dataType: "text"
+
+    });
+
+    }
+
+    //显示新增弹窗
+    function btn_show2() {
+        $('#deptadd').modal();//显示新增弹窗
+    }
+
+    //完成部门添加功能
+    function add() {
+        $('#addForm').ajaxSubmit({
+            success: function (data) {
+                if(data == 'success'){//如果成功
+                    //弹出框设置
+                    $.notify({
+                        message: '添加成功!'
+                    },{
+                        type: 'success',
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        },
+                        delay: 1000 //显示时长(毫秒)
+                    });
+                }else if (data == 'failure'){//如果失败
+                    $.notify({
+                        message: '添加失败！'
+                    },{
+                        type: "warning",
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        },
+                        delay: 1000
+                    });
+                }
+            },
+            resetForm: false,
+        });
+        //更新后重新加载页面,设置延迟1s刷新
+        setTimeout(function () {
+            location.reload();//刷新页面
+        },1000);
+        //清空添加的文本框
+        $('#dept_name').val('');
+        $('#descript').val('');
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="~{user/userBase :: head}"></div>
+
+
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <div th:replace="~{user/userBase :: topbar}"></div>
+    <!-- partial -->
+    <div  class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+
+      <div th:replace="~{user/userBase :: sidebar}"></div>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+        <div class="col-md-6 grid-margin stretch-card">
+<!--        <div class="col-12 grid-margin stretch-card">-->
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">个人资料面板</h4>
+<!--              <p class="card-description">-->
+<!--                Basic form layout-->
+<!--              </p>-->
+              <form id="baseForm"  class="forms-sample" th:action="@{/user/update}" method="post">
+                <div class="form-group">
+                  <label for="exampleInputUsername1">用户名</label>
+                  <input type="text" th:value="${user.uname}" class="form-control" id="exampleInputUsername1" placeholder="Username" name="uname">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">电子邮箱</label>
+                  <input type="email" th:value="${user.uemail}" class="form-control" id="exampleInputEmail1" placeholder="Email" name="uemail">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">密码</label>
+                  <input type="password" th:value="${user.upwd}" class="form-control" id="exampleInputPassword1" placeholder="Password" name="upwd">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputTelphone">联系方式</label>
+                  <input type="text" th:value="${user.utel}" class="form-control" id="exampleInputTelphone" placeholder="Telphone" name="utel">
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputAddress1">收货地址</label>
+                  <input type="text" th:value="${user.uaddress}" class="form-control" id="exampleInputAddress1" placeholder="Address" name="uaddress">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPostcode1">邮政编码</label>
+                  <input type="text" th:value="${user.upostcode}" class="form-control" id="exampleInputPostcode1" placeholder="Postcode" name="upostcode">
+                </div>
+                <div class="form-check form-check-flat form-check-primary">
+                  <label class="form-check-labe1">
+                    <input type="checkbox" class="form-check-input" id="ckbox">
+                    确认修改
+                  </label>
+                </div>
+
+                <button type="button" class="btn btn-primary mr-2" onclick="update()">修改</button>
+                <button type="reset" class="btn btn-outline-danger " >取消</button>
+
+              </form>
+            </div>
+          </div>
+        </div>
+          </div>
+
+        </div>
+          </div>
+      </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <!-- partial -->
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <div th:include="~{user/userBase :: footer}"></div>
+
+  <script src="../js/myjs/bootstrap-notify.js"></script>
+  <script src="../js/myjs/ajaxUser.js"></script>
+
+  <!-- End custom js for this page-->
+</body>
+
+</html>
+
